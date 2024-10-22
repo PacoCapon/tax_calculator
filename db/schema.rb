@@ -13,7 +13,7 @@
 ActiveRecord::Schema[7.2].define(version: 2024_10_22_083800) do
   create_table "buyers", force: :cascade do |t|
     t.string "country"
-    t.string "type"
+    t.string "buyer_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
