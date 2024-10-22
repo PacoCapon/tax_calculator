@@ -1,0 +1,27 @@
+<h1>Tax Calculator</h1>
+
+<%= form_with url: tax_calculator_path, method: :post, local: true, data: { turbo: false } do |form| %>
+  <div>
+    <label for="product_name">Product name:</label>
+    <%= form.text_field :name, id: 'product_name' %>
+  </div>
+
+  <div>
+    <label for="product_category">Product Category:</label>
+    <%= form.select :category, ['digital', 'good'], prompt: 'Select a category', id: 'product_category' %>
+  </div>
+
+  <div>
+    <label for="buyer_country">Buyer´s contry:</label>
+    <%= form.text_field :country, id: 'buyer_country' %>
+  </div>
+
+  <div>
+    <label for="buyer_type">Buyer´s type:</label>
+    <%= form.select :buyer_type, ['individual', 'company'], prompt: 'Select a type', id: 'buyer_type' %>
+  </div>
+
+  <div>
+    <%= form.submit 'Calculate taxes' %>
+  </div>
+<% end %>

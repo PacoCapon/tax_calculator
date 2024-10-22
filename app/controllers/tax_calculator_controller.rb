@@ -1,9 +1,13 @@
 class TaxCalculatorController < ApplicationController
   def calculate
-    product = Product.find(params[:product_id])
-    buyer = Buyer.find(params[:buyer_id])
+    product_name = params[:name]
+    product_category = params[:category]
+    buyer_country = params[:country]
+    buyer_type = params[:buyer_type]
 
-    taxes = TaxCalculatorService.new(product, buyer).calculate
-    render json: taxes, status: :ok
+    tax_amount = TaxCalculatorService.new(product_name, product_category, buyer_country, buyer_type).calculate
+
+    @tax = tax_amount
+    render :result
   end
 end
