@@ -1,9 +1,9 @@
-<h1>Tax Calculator - Result</h1>
+<h1>Tax Calculator</h1>
 
 <% if @tax.present? %>
-  <p>El monto del impuesto calculado es: <strong><%= @tax %></strong></p>
+  <p>The calculated tax is: <strong><%= @tax[:vat] %>%</strong> and the type is: <strong><%= @tax[:type] %></strong></p>
 <% else %>
-  <p>No se pudo calcular el impuesto. Por favor, verifica los datos ingresados.</p>
+  <p>Tax could not be calculated. Please verify the data entered.</p>
 <% end %>
 
 <%= link_to 'Back to tax calculator', tax_calculator_path %>
