@@ -2,11 +2,6 @@ require 'rails_helper'
 require 'faker'
 
 RSpec.describe TaxCalculatorService, type: :service do
-  before do
-    # Fijamos los datos generados por Faker para asegurar que las pruebas sean reproducibles
-    Faker::Config.random = Random.new(42)
-  end
-
   let(:product_digital) { Product.create(name: Faker::Commerce.product_name, category: 'digital') }
   let(:product_good) { Product.create(name: Faker::Food.ingredient, category: 'good') }
   let(:buyer_spain) { Buyer.create(country: 'Spain', buyer_type: 'individual') }
