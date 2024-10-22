@@ -1,24 +1,10 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Description:
 
-Things you may want to cover:
+Implementation of a system that is capable of calculating taxes on the sales of products and services.
 
-* Ruby version
+## Versions:
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- Ruby: 3.3.4
+- Rails: 7.2.2.1
