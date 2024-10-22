@@ -4,6 +4,6 @@ class TaxCalculatorController < ApplicationController
     buyer = Buyer.find(params[:buyer_id])
 
     taxes = TaxCalculatorService.new(product, buyer).calculate
-    render json: taxes
+    render json: taxes, status: :ok
   end
 end
