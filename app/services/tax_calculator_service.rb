@@ -29,7 +29,7 @@ class TaxCalculatorService
       { vat: local_vat("ES"), type: "domestic" }
     elsif eu_member?(@buyer.country)
       if @buyer.buyer_type == "individual"
-        { vat: local_vat(@buyer.country), type: "eu_vat" }
+        { vat: local_vat(@buyer.country), type: "#{@buyer.country.downcase}_vat" }
       else
         { vat: 0, type: "reverse_charge" }
       end
@@ -43,7 +43,7 @@ class TaxCalculatorService
       { vat: local_vat("ES"), type: "domestic" }
     elsif eu_member?(@buyer.country)
       if @buyer.buyer_type == "individual"
-        { vat: local_vat(@buyer.country), type: "eu_vat" }
+        { vat: local_vat(@buyer.country), type: "#{@buyer.country.downcase}_vat" }
       else
         { vat: 0, type: "reverse_charge" }
       end
