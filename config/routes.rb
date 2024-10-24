@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :buyers
+  resources :products
   get "tax_calculator", to: "tax_calculator#form"
   post "tax_calculator", to: "tax_calculator#calculate"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

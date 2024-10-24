@@ -1,27 +1,18 @@
-<h1>Tax Calculator</h1>
+<div class="container">
+  <h1>Calculadora de Impuestos</h1>
+  <%= form_with url: tax_calculator_path, method: :post, local: true do |form| %>
+    <div class="form-group">
+      <%= form.label :product, "Seleccionar Producto", class: "control-label" %>
+      <%= form.collection_select :product_id, Product.all, :id, :name, { prompt: "Selecciona un producto" }, { class: "form-control" } %>
+    </div>
 
-<%= form_with url: tax_calculator_path, method: :post, local: true, data: { turbo: false } do |form| %>
-  <div>
-    <label for="product_name">Product name:</label>
-    <%= form.text_field :name, id: 'product_name' %>
-  </div>
+    <div class="form-group">
+      <%= form.label :buyer, "Seleccionar Comprador", class: "control-label" %>
+      <%= form.collection_select :buyer_id, Buyer.all, :id, :name, { prompt: "Selecciona un comprador" }, { class: "form-control" } %>
+    </div>
 
-  <div>
-    <label for="product_category">Product Category:</label>
-    <%= form.select :category, ['digital', 'good'], prompt: 'Select a category', id: 'product_category' %>
-  </div>
-
-  <div>
-    <label for="buyer_country">Buyer´s contry:</label>
-    <%= form.country_select :country, { prompt: "Select a country" }, { class: "country-select" } %>
-  </div>
-
-  <div>
-    <label for="buyer_type">Buyer´s type:</label>
-    <%= form.select :buyer_type, ['individual', 'company'], prompt: 'Select a type', id: 'buyer_type' %>
-  </div>
-
-  <div>
-    <%= form.submit 'Calculate taxes' %>
-  </div>
-<% end %>
+    <div class="form-group">
+      <%= form.submit 'Calcular Impuesto', class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
