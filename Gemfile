@@ -36,7 +36,7 @@ gem "bootsnap", require: false
 
 
 # Grid and styles
-gem "bootstrap", "~> 5.1.0"
+gem "bootstrap", "~> 5.3.3"
 
 # Debug
 gem "byebug"
