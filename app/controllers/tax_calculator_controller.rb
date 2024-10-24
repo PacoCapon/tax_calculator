@@ -5,6 +5,7 @@ class TaxCalculatorController < ApplicationController
 
     tax_amount = TaxCalculatorService.new(product, buyer).calculate
 
-    render :result, locals: { tax_amount: tax_amount }
+    @tax = tax_amount
+    render :result
   end
 end

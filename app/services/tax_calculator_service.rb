@@ -3,21 +3,19 @@ require "yaml"
 class TaxCalculatorService
   SPAIN_VAT = 0.21
 
-  def initialize(product_name, product_category, buyer_country, buyer_type)
-    @product_name = product_name
-    @product_category = product_category
-    @buyer_country = buyer_country
-    @buyer_type = buyer_type
+  def initialize(product, buyer)
+    @product = product
+    @buyer = buyer
     @vat_rates = YAML.load_file(Rails.root.join("config", "vat_rates.yml"))["vat_rates"]
   end
 
   def calculate
-    case @product_category
-    when "good"
+    case @product.category
+    when "food"
       calculate_good
-    when "digital"
+    when "digital_service"
       calculate_digital
-    when "onsite"
+    when "onsite_service"
       calculate_onsite
     else
       raise "Unknown product type"
@@ -27,10 +25,10 @@ class TaxCalculatorService
   private
 
   def calculate_good
-    if @buyer_country == "Spain"
-      { vat: local_vat("Spain"), type: "domestic" }
-    elsif eu_member?(@buyer_country)
-      if @buyer_type == "individual"
+    if @buyer.country == "ES"
+      { vat: local_vat("ES"), type: "domestic" }
+    elsif eu_member?(@buyer.country)
+      if @buyer.buyer_type == "individual"
         { vat: local_vat(@buyer.country), type: "eu_vat" }
       else
         { vat: 0, type: "reverse_charge" }
@@ -41,11 +39,11 @@ class TaxCalculatorService
   end
 
   def calculate_digital
-    if @buyer_country == "Spain"
-      { vat: local_vat("Spain"), type: "domestic" }
-    elsif eu_member?(@buyer_country)
-      if @buyer_type == "individual"
-        { vat: local_vat(@buyer_country), type: "eu_vat" }
+    if @buyer.country == "ES"
+      { vat: local_vat("ES"), type: "domestic" }
+    elsif eu_member?(@buyer.country)
+      if @buyer.buyer_type == "individual"
+        { vat: local_vat(@buyer.country), type: "eu_vat" }
       else
         { vat: 0, type: "reverse_charge" }
       end
@@ -55,7 +53,7 @@ class TaxCalculatorService
   end
 
   def calculate_onsite
-    { vat: local_vat("Spain"), type: "domestic" }
+    { vat: local_vat("ES"), type: "domestic" }
   end
 
   def local_vat(country)
