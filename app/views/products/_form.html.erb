@@ -9,7 +9,7 @@
       <%= form.label :category, "Product Type", class: "control-label" %>
       <%= form.select :category, options_for_select([["Food", "food"], ["Digital Services", "digital_service"], ["Onsite Service", "onsite_service"]]), { prompt: "Select a type of product" }, class: "form-control" %>
     </div>
-
+    <br/>
     <div class="form-group">
       <%= form.submit "Save product", class: "btn btn-primary" %>
     </div>
