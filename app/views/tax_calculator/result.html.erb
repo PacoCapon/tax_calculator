@@ -1,9 +1,11 @@
-<h1>Tax Calculator</h1>
+<div class="container">
+  <h1>Tax Calculator</h1>
 
-<% if @tax.present? %>
-  <p>The calculated tax is: <strong><%= @tax[:vat] %>%</strong> and the type is: <strong><%= @tax[:type] %></strong></p>
-<% else %>
-  <p>Tax could not be calculated. Please verify the data entered.</p>
-<% end %>
+  <% if @tax.present? %>
+    <p>The calculated tax to the buyer <strong><%= @tax[:country] %></strong> from is: <strong><%= @tax[:vat] %>%</strong> and the type is: <strong><%= @tax[:type].join(', ') %></strong></p>
+  <% else %>
+    <p>Tax could not be calculated. Please verify the data entered.</p>
+  <% end %>
 
-<%= link_to 'Back to tax calculator', tax_calculator_path %>
+  <%= link_to 'Back to tax calculator', tax_calculator_path, class: "btn btn-secondary" %>
+</div>

@@ -9,10 +9,10 @@
     <% @buyers.each do |buyer| %>
       <%= render buyer %>
       <p>
-        <%= link_to "Show this buyer", buyer %>
+        <%= link_to "Show this buyer", buyer, class: "btn btn-success" %>
       </p>
     <% end %>
   </div>
 
-  <%= link_to "New buyer", new_buyer_path %>
+  <%= link_to "New buyer", new_buyer_path, class: "btn btn-primary"  %>
 </div>

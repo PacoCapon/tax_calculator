@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :buyer do
-    name { "MyString" }
-    buyer_type { "MyString" }
-    country { "MyString" }
+    name { Faker::Name.name }
+    country { Faker::Address.country }
+    buyer_type { %w[individual company].sample }
   end
 end

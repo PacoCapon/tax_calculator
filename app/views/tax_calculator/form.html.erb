@@ -10,7 +10,7 @@
       <%= form.label :buyer, "Seleccionar Comprador", class: "control-label" %>
       <%= form.collection_select :buyer_id, Buyer.all, :id, :name, { prompt: "Selecciona un comprador" }, { class: "form-control" } %>
     </div>
-
+    <br/>
     <div class="form-group">
       <%= form.submit 'Calcular Impuesto', class: "btn btn-primary" %>
     </div>

@@ -1,8 +1,6 @@
 require "yaml"
 
 class TaxCalculatorService
-  SPAIN_VAT = 0.21
-
   def initialize(product, buyer)
     @product = product
     @buyer = buyer
@@ -26,34 +24,34 @@ class TaxCalculatorService
 
   def calculate_good
     if @buyer.country == "ES"
-      { vat: local_vat("ES"), type: "domestic" }
+      { vat: local_vat("ES"), country: "ES", type: ["good"] }
     elsif eu_member?(@buyer.country)
       if @buyer.buyer_type == "individual"
-        { vat: local_vat(@buyer.country), type: "#{@buyer.country.downcase}_vat" }
+        { vat: local_vat(@buyer.country), country: "ES", type: ["good"] }
       else
-        { vat: 0, type: "reverse_charge" }
+        { vat: 0, country: @buyer.country, type: ["reverse_charge"] }
       end
     else
-      { vat: 0, type: "export" }
+      { vat: 0, country: @buyer.country, type: ["export"] }
     end
   end
 
   def calculate_digital
     if @buyer.country == "ES"
-      { vat: local_vat("ES"), type: "domestic" }
+      { vat: local_vat("ES"), country: "ES", type: ["service", "digital"] }
     elsif eu_member?(@buyer.country)
       if @buyer.buyer_type == "individual"
-        { vat: local_vat(@buyer.country), type: "#{@buyer.country.downcase}_vat" }
+        { vat: local_vat(@buyer.country), country: @buyer.country, type: ["service", "digital"] }
       else
-        { vat: 0, type: "reverse_charge" }
+        { vat: 0, country: @buyer.country, type: ["reverse_charge"] }
       end
     else
-      { vat: 0, type: "export" }
+      { vat: 0, country: @buyer.country, type: ["export"] }
     end
   end
 
   def calculate_onsite
-    { vat: local_vat("ES"), type: "domestic" }
+    { vat: local_vat("ES"), country: @buyer.country, type: ["service", "onsite"] }
   end
 
   def local_vat(country)

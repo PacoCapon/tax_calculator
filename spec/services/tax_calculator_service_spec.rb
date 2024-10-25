@@ -1,72 +1,108 @@
 require 'rails_helper'
-require 'faker'
 
 RSpec.describe TaxCalculatorService, type: :service do
-  let(:product_digital) { Product.create(name: Faker::Commerce.product_name, category: 'digital') }
-  let(:product_good) { Product.create(name: Faker::Food.ingredient, category: 'good') }
-  let(:buyer_spain) { Buyer.create(country: 'Spain', buyer_type: 'individual') }
-  let(:buyer_france) { Buyer.create(country: 'France', buyer_type: 'individual') }
-  let(:buyer_germany_company) { Buyer.create(country: 'Germany', buyer_type: 'company') }
-  let(:buyer_usa) { Buyer.create(country: 'USA', buyer_type: 'individual') }
+  let(:vat_rates) do
+    {
+      "AT" => 0.20,  # Austria
+      "BE" => 0.21,  # Belgium
+      "BG" => 0.20,  # Bulgaria
+      "HR" => 0.25,  # Croatia
+      "CY" => 0.19,  # Cyprus
+      "CZ" => 0.21,  # Czech Republic
+      "DK" => 0.25,  # Denmark
+      "EE" => 0.20,  # Estonia
+      "FI" => 0.24,  # Finland
+      "FR" => 0.20,  # France
+      "DE" => 0.19,  # Germany
+      "GR" => 0.24,  # Greece
+      "HU" => 0.27,  # Hungary
+      "IE" => 0.23,  # Ireland
+      "IT" => 0.22,  # Italy
+      "LV" => 0.21,  # Latvia
+      "LT" => 0.21,  # Lithuania
+      "LU" => 0.17,  # Luxembourg
+      "MT" => 0.18,  # Malta
+      "NL" => 0.21,  # Netherlands
+      "PL" => 0.23,  # Poland
+      "PT" => 0.23,  # Portugal
+      "RO" => 0.19,  # Romania
+      "SK" => 0.20,  # Slovakia
+      "SI" => 0.22,  # Slovenia
+      "ES" => 0.21,  # Spain
+      "SE" => 0.25   # Sweden
+    }
+  end
 
-  describe '#calculate' do
-    context 'digital service' do
-      it 'applies Spain VAT for digital service sold in Spain' do
-        service = TaxCalculatorService.new(product_digital, buyer_spain)
-        result = service.calculate
-        expect(result[:vat]).to eq(0.21)
-        expect(result[:type]).to eq('domestic')
+  before do
+    allow(YAML).to receive(:load_file).and_return({ "vat_rates" => vat_rates })
+  end
+
+  let(:buyer_spain_individual) { build(:buyer, country: "ES", buyer_type: "individual") }
+  let(:buyer_spain_company) { build(:buyer, country: "ES", buyer_type: "company") }
+  let(:buyer_eu_individual) { build(:buyer, country: "FR", buyer_type: "individual") }
+  let(:buyer_eu_company) { build(:buyer, country: "DE", buyer_type: "company") }
+  let(:buyer_non_eu) { build(:buyer, country: "US", buyer_type: "individual") }
+
+  describe "#calculate" do
+    context "when product category is food" do
+      let(:product) { build(:product, category: "food") }
+
+      it "applies Spanish VAT for a buyer in Spain" do
+        result = TaxCalculatorService.new(product, buyer_spain_individual).calculate
+        expect(result).to eq({ vat: 0.21, country: "ES", type: %w(good) })
       end
 
-      it 'applies France VAT for EU individual buyer' do
-        service = TaxCalculatorService.new(product_digital, buyer_france)
-        result = service.calculate
-        expect(result[:vat]).to eq(0.20)
-        expect(result[:type]).to eq('eu_vat')
+      it "applies local VAT for an individual buyer in the EU" do
+        result = TaxCalculatorService.new(product, buyer_eu_individual).calculate
+        expect(result).to eq({ vat: 0.20, country: "ES", type: %w(good) })
       end
 
-      it 'marks reverse charge for EU company buyer from Germany' do
-        service = TaxCalculatorService.new(product_digital, buyer_germany_company)
-        result = service.calculate
-        expect(result[:vat]).to eq(0)
-        expect(result[:type]).to eq('reverse_charge')
+      it "applies reverse charge for a company buyer in the EU" do
+        result = TaxCalculatorService.new(product, buyer_eu_company).calculate
+        expect(result).to eq({ vat: 0, country: "DE", type: %w(reverse_charge) })
       end
 
-      it 'marks export for outside EU buyer' do
-        service = TaxCalculatorService.new(product_digital, buyer_usa)
-        result = service.calculate
-        expect(result[:vat]).to eq(0)
-        expect(result[:type]).to eq('export')
+      it "applies export rules for a buyer outside the EU" do
+        result = TaxCalculatorService.new(product, buyer_non_eu).calculate
+        expect(result).to eq({ vat: 0, country: "US", type: %w(export) })
       end
     end
 
-    context 'good' do
-      it 'applies Spain VAT for goods sold in Spain' do
-        service = TaxCalculatorService.new(product_good, buyer_spain)
-        result = service.calculate
-        expect(result[:vat]).to eq(0.21)
-        expect(result[:type]).to eq('domestic')
+    context "when product category is digital_service" do
+      let(:product) { build(:product, category: "digital_service") }
+
+      it "applies Spanish VAT for a buyer in Spain" do
+        result = TaxCalculatorService.new(product, buyer_spain_individual).calculate
+        expect(result).to eq({ vat: 0.21, country: "ES", type: %w(service digital) })
       end
 
-      it 'applies France VAT for EU individual buyer' do
-        service = TaxCalculatorService.new(product_good, buyer_france)
-        result = service.calculate
-        expect(result[:vat]).to eq(0.20)
-        expect(result[:type]).to eq('eu_vat')
+      it "applies local VAT for an individual buyer in the EU" do
+        result = TaxCalculatorService.new(product, buyer_eu_individual).calculate
+        expect(result).to eq({ vat: 0.20, country: "FR", type: %w(service digital) })
       end
 
-      it 'marks reverse charge for EU company buyer' do
-        service = TaxCalculatorService.new(product_good, buyer_germany_company)
-        result = service.calculate
-        expect(result[:vat]).to eq(0)
-        expect(result[:type]).to eq('reverse_charge')
+      it "applies reverse charge for a company buyer in the EU" do
+        result = TaxCalculatorService.new(product, buyer_eu_company).calculate
+        expect(result).to eq({ vat: 0, country: "DE", type: %w(reverse_charge) })
       end
 
-      it 'marks export for outisde EU buyer' do
-        service = TaxCalculatorService.new(product_good, buyer_usa)
-        result = service.calculate
-        expect(result[:vat]).to eq(0)
-        expect(result[:type]).to eq('export')
+      it "applies export rules for a buyer outside the EU" do
+        result = TaxCalculatorService.new(product, buyer_non_eu).calculate
+        expect(result).to eq({ vat: 0, country: "US", type: %w(export) })
+      end
+    end
+
+    context "when product category is onsite_service" do
+      let(:product) { build(:product, category: "onsite_service") }
+
+      it "always applies Spanish VAT regardless of buyer's location" do
+        result_spain = TaxCalculatorService.new(product, buyer_spain_individual).calculate
+        result_eu = TaxCalculatorService.new(product, buyer_eu_individual).calculate
+        result_non_eu = TaxCalculatorService.new(product, buyer_non_eu).calculate
+
+        expect(result_spain).to eq({ vat: 0.21, country: "ES", type: %w(service onsite) })
+        expect(result_eu).to eq({ vat: 0.21, country: "FR", type: %w(service onsite) })
+        expect(result_non_eu).to eq({ vat: 0.21, country: "US", type: %w(service onsite) })
       end
     end
   end

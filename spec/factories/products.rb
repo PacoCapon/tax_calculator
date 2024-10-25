@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :product do
-    name { "MyString" }
-    category { "MyString" }
+    name { Faker::Commerce.product_name }
+    category { %w[food digital_service onsite_service].sample }
   end
 end
