@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :transaction do
-    vat { "9.99" }
-    country { "MyString" }
-    transaction_type { "MyString" }
-    calculation_date { "2024-10-25 10:19:25" }
-    buyer { nil }
-    product { nil }
+    vat { Faker::Number.decimal(l_digits: 2) }
+    country { Faker::Address.country_code }
+    transaction_type { ["good", "service", "digital"].sample }
+    calculation_date { Faker::Date.backward(days: 14) }
+    association :buyer
+    association :product
   end
 end
