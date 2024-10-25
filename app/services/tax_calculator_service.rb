@@ -8,16 +8,27 @@ class TaxCalculatorService
   end
 
   def calculate
-    case @product.category
-    when "food"
-      calculate_good
-    when "digital_service"
-      calculate_digital
-    when "onsite_service"
-      calculate_onsite
-    else
-      raise "Unknown product type"
-    end
+    result = case @product.category
+             when "food"
+               calculate_good
+             when "digital_service"
+               calculate_digital
+             when "onsite_service"
+               calculate_onsite
+             else
+               raise "Unknown product type"
+             end
+
+    Transaction.create(
+      vat: result[:vat],
+      country: result[:country],
+      transaction_type: result[:type].join(", "),
+      calculation_date: Time.now,
+      buyer: @buyer,
+      product: @product
+    )
+
+    result
   end
 
   private

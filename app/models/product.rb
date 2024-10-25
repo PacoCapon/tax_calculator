@@ -1,4 +1,6 @@
 class Product < ApplicationRecord
+  has_many :transactions
+
   CATEGORIES = %w[food digital_service onsite_service].freeze
 
   validates :name, presence: true

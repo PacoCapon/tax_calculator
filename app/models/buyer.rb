@@ -1,4 +1,6 @@
 class Buyer < ApplicationRecord
+  has_many :transactions
+
   BUYER_TYPES = %w[individual company].freeze
 
   validates :name, presence: true

@@ -2,7 +2,7 @@
   <h1>Tax Calculator</h1>
 
   <% if @tax.present? %>
-    <p>The calculated tax to the buyer <strong><%= @tax[:country] %></strong> from is: <strong><%= @tax[:vat] %>%</strong> and the type is: <strong><%= @tax[:type].join(', ') %></strong></p>
+    <p>The calculated tax to the buyer from <strong><%= @tax[:country] %></strong> is: <strong><%= @tax[:vat] %>%</strong> and the type is: <strong><%= @tax[:type].join(', ') %></strong></p>
   <% else %>
     <p>Tax could not be calculated. Please verify the data entered.</p>
   <% end %>

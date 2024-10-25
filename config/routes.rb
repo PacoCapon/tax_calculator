@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
+  get "transactions/index"
   resources :buyers
   resources :products
+  resources :transactions, only: [:index]
   get "tax_calculator", to: "tax_calculator#form"
   post "tax_calculator", to: "tax_calculator#calculate"
 
