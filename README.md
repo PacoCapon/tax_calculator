@@ -43,4 +43,8 @@ There is some information to test the implementation in the seeds file. To fill 
 
 This will create some products, buyers and transactions.
 
+### Run tests
+
+``` bundle exec rspec ```
+
 
